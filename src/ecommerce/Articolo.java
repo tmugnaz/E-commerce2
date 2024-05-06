@@ -6,16 +6,15 @@ public class Articolo {
 	private Long id ;
 	private int prezzo;
 	private Categoria categoria;
+	
+	
+	public Articolo(String nome, Long id, int prezzo, Categoria categoria) {
+		this.nome = nome;
+		this.id = id;
+		this.prezzo = prezzo;
+		this.categoria = categoria;
+	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public String getNome() {
 		return nome;
 	}

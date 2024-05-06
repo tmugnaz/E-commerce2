@@ -3,15 +3,15 @@ package ecommerce;
 public class RigaOrdine {
 	
 	
-	
-	private int prezzoUnitario;
+	private Articolo articolo;
+	private int prezzoUnitarioArticolo;
 	private int qta ;
 	private int sconto;
 	private int iva;
 	
-	public RigaOrdine(int prezzoUnitario, int qta, int sconto, int iva) {
-		
-		this.prezzoUnitario = prezzoUnitario;
+	public RigaOrdine(Articolo articolo, int qta, int sconto, int iva) {
+		this.articolo = articolo;
+		this.prezzoUnitarioArticolo = articolo.getPrezzo();
 		this.qta = qta;
 		this.sconto = sconto;
 		this.iva = iva;
@@ -20,12 +20,26 @@ public class RigaOrdine {
 	
 	
 	
+	public Articolo getArticolo() {
+		return articolo;
+	}
+
+
+
+
+	public void setArticolo(Articolo articolo) {
+		this.articolo = articolo;
+	}
+
+
+
+
 	//GETTER E SETTER----------------
 	public int getPrezzoUnitario() {
-		return prezzoUnitario;
+		return prezzoUnitarioArticolo;
 	}
 	public void setPrezzoUnitario(int prezzoUnitario) {
-		this.prezzoUnitario = prezzoUnitario;
+		this.prezzoUnitarioArticolo = prezzoUnitario;
 	}
 	public int getQta() {
 		return qta;

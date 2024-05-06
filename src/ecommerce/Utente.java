@@ -3,25 +3,30 @@ package ecommerce;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Utente {
+public abstract class Utente {
 	private String nome;
 	private String cognome;
 	private String codiceFiscale ;
-	private Ruolo ruolo;
 	private List<String> numeriTelefono= new ArrayList<String>();
+	private List<IndirizzoUtente> indirizzi = new ArrayList<IndirizzoUtente>();
 	
-	public Utente(String nome, String cognome, String codiceFiscale, Ruolo ruolo) {
-		
+	public Utente(String nome, String cognome, String codiceFiscale) {
+	
 		this.nome = nome;
 		this.cognome = cognome;
 		this.codiceFiscale = codiceFiscale;
-		this.ruolo = ruolo;
 		
 	}
 	
 	
+	public void aggiungiIndirizzo(String via, String cap, String citta, TipoIndirizzo tipoIndirizzo) {
+		IndirizzoUtente i = new IndirizzoUtente(via, cap, citta, tipoIndirizzo);
+		this.indirizzi.add(i);
+	}
 	
-	
+	public void aggiungiIndirizzo(IndirizzoUtente i) {
+		this.indirizzi.add(i);
+	}
 	
 	public void aggiungiNumeroTelefono(String numero) {
 		
@@ -29,8 +34,8 @@ public class Utente {
 	}
 	
 	public void StampaInfoUtente() {
-		System.out.println("nome: "+this.getNome()+", cognome: "+this.getCognome()+", codice fiscale: "+this.getCodiceFiscale()+
-							", ruolo: "+this.getRuolo().name());
+		System.out.println("nome: "+this.getNome()+", cognome: "+this.getCognome()
+		+", codice fiscale: "+this.getCodiceFiscale());
 		int cont =1;
 		for (String string : numeriTelefono) {
 			System.out.println("numero "+cont+":"+string);
@@ -60,15 +65,7 @@ public class Utente {
 	public void setCodiceFiscale(String codiceFiscale) {
 		this.codiceFiscale = codiceFiscale;
 	}
-	public Ruolo getRuolo() {
-		return ruolo;
-	}
-	public void setRuolo(Ruolo ruolo) {
-		this.ruolo = ruolo;
-	}
-
-
-
+	
 
 
 
