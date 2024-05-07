@@ -114,7 +114,7 @@ public class Amministratore extends Utente {
 					+ "│   Seleziona un'opzione:               │\n" + "│   1. Crea MacroCategoria              │\n"
 					+ "│   2. Crea SottoCategoria              │\n" + "│   3. Modifica Categoria               │\n"
 					+ "│   4. Elimina Categoria                │\n" + "│   5. Visualizza lista Categorie       │\n"
-					+ "│   6. Visualizza info Categoria       │\n" + "│   7. Uscita                           │\n"
+					+ "│   6. Visualizza info Categoria        │\n" + "│   7. Uscita                           │\n"
 					+ "│                                       │\n" + "╰───────────────────────────────────────╯");
 			String scelta = scanner.nextLine();
 			switch (scelta) {
@@ -181,9 +181,7 @@ public class Amministratore extends Utente {
 		System.out.println("Categoria Eliminata con successo");
 	}
 
-	private void modificaCategoriaScanner(Scanner scanner) {
-		System.out.println("Inserisci il nome della categoria da modificare:");
-		String nomeCategoria = scanner.nextLine();
+	private void modificaCategoriaArticolo(Scanner scanner, Categoria categoria) {
 		try {
 			System.out.println("Cosa vuoi Fare?");
 			System.out.println("per modificare l'iva digita 1");
@@ -193,30 +191,75 @@ public class Amministratore extends Utente {
 			scanner.nextLine();
 			switch (scelta) {
 			case (1):
-				System.out.println("digitare il valore da sostituire con quello corrente, che è: "
-						+ searchCategoriaByName(nomeCategoria).getIva());
+				System.out
+						.println("digitare il valore da sostituire con quello corrente, che è: " + categoria.getIva());
 				int nuovaIva = scanner.nextInt();
 				scanner.nextLine();
-				this.setIva(nuovaIva, searchCategoriaByName(nomeCategoria));
+				this.setIva(nuovaIva, categoria);
 				break;
 			case (2):
-				System.out.println("digitare il valore da sostituire con quello corrente, che è: "
-						+ searchCategoriaByName(nomeCategoria).getSconto());
+				System.out.println(
+						"digitare il valore da sostituire con quello corrente, che è: " + categoria.getSconto());
 				int nuovoSconto = scanner.nextInt();
 				scanner.nextLine();
-				this.setIva(nuovoSconto, searchCategoriaByName(nomeCategoria));
+				this.setIva(nuovoSconto, categoria);
 				break;
 			case (3):
-				System.out.println("digitare il nome  da sostituire con quello corrente, che è: "
-						+ searchCategoriaByName(nomeCategoria).getSconto());
+				System.out.println(
+						"digitare il nome  da sostituire con quello corrente, che è: " + categoria.getSconto());
 				String nuovoNome = scanner.nextLine();
-				this.setNomeCategoria(nuovoNome, searchCategoriaByName(nomeCategoria));
+				this.setNomeCategoria(nuovoNome, categoria);
 				break;
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Errore: assicurati di inserire un numero ");
 		} finally {
 
+		}
+	}
+
+	private void modificaCategoriaScanner(Scanner scanner) {
+		System.out.println("Inserisci il nome della categoria da modificare:");
+		String nomeCategoria = scanner.nextLine();
+		if (searchCategoriaByName(nomeCategoria) != null) {
+			Categoria categoria = searchCategoriaByName(nomeCategoria);
+
+			try {
+				System.out.println("Cosa vuoi Fare?");
+				System.out.println("per modificare l'iva digita 1");
+				System.out.println("per modificare lo sconto digita 2");
+				System.out.println("per modificare il nome digita 3");
+				int scelta = scanner.nextInt();
+				scanner.nextLine();
+				switch (scelta) {
+				case (1):
+					System.out.println(
+							"digitare il valore da sostituire con quello corrente, che è: " + categoria.getIva());
+					int nuovaIva = scanner.nextInt();
+					scanner.nextLine();
+					this.setIva(nuovaIva, categoria);
+					break;
+				case (2):
+					System.out.println(
+							"digitare il valore da sostituire con quello corrente, che è: " + categoria.getSconto());
+					int nuovoSconto = scanner.nextInt();
+					scanner.nextLine();
+					this.setIva(nuovoSconto, categoria);
+					break;
+				case (3):
+					System.out.println(
+							"digitare il nome  da sostituire con quello corrente, che è: " + categoria.getSconto());
+					String nuovoNome = scanner.nextLine();
+					this.setNomeCategoria(nuovoNome, categoria);
+					break;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Errore: assicurati di inserire un numero ");
+			} finally {
+
+			}
+		} else {
+			System.out.println("categoria non trovata");
 		}
 
 	}
@@ -283,31 +326,37 @@ public class Amministratore extends Utente {
 		Long idTarget = scanner.nextLong();
 		scanner.nextLine();
 		if (searchArticolobyId(idTarget, inventario) != null) {
-			searchArticolobyId(idTarget, inventario).getInfo();
+			Articolo articolo = searchArticolobyId(idTarget, inventario);
+			articolo.getInfo();
 			System.out.println("Cosa vuoi modificare?");
 			System.out.println("╭───────────────────────────────────────╮\n"
 					+ "│   Seleziona un'opzione:               │\n" + "│                                       │\n"
 					+ "│   1. Modifica nome                    │\n" + "│   2. Modifica Prezzo                  │\n"
 					+ "│   3. Modifica Categoria               │\n" + "│                                       │\n"
+					+ "│   4. Annulla                          │\n" + "│                                       │\n"
 					+ "╰───────────────────────────────────────╯");
 
 			try {
-				int scelta = scanner.nextInt();
+				String scelta = scanner.nextLine();
+
 				switch (scelta) {
-				case (1):
+				case ("1"):
 					System.out.println("inserisci il nuovo nome per l'articolo");
 					String nuovoNome = scanner.nextLine();
-					searchArticolobyId(idTarget, inventario).setNome(nuovoNome);
+					articolo.setNome(nuovoNome);
 					break;
-				case (2):
+				case ("2"):
 					System.out.println("inserisci il nuovo prezzo per l'articolo");
 					int nuovoPrezzo = scanner.nextInt();
 					scanner.nextLine();
-					searchArticolobyId(idTarget, inventario).setPrezzo(nuovoPrezzo);
+					articolo.setPrezzo(nuovoPrezzo);
 					break;
-				case (3):
-					this.modificaCategoriaScanner(scanner);
+				case ("3"):
+					this.modificaCategoriaArticolo(scanner, articolo.getCategoria());
+					break;
 
+				case ("4"):
+					break;
 				}
 
 			} catch (InputMismatchException e) {
