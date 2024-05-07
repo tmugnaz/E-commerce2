@@ -210,6 +210,8 @@ public class Amministratore extends Utente {
 				String nuovoNome = scanner.nextLine();
 				this.setNomeCategoria(nuovoNome, categoria);
 				break;
+			default:
+				System.out.println("scelta non valida");
 			}
 		} catch (InputMismatchException e) {
 			System.out.println("Errore: assicurati di inserire un numero ");
@@ -252,6 +254,8 @@ public class Amministratore extends Utente {
 					String nuovoNome = scanner.nextLine();
 					this.setNomeCategoria(nuovoNome, categoria);
 					break;
+				default:
+					System.out.println("scelta non valida");
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("Errore: assicurati di inserire un numero ");
@@ -316,8 +320,14 @@ public class Amministratore extends Utente {
 
 		Long idTarget = scanner.nextLong();
 		scanner.nextLine();
-		inventario.remove(searchArticolobyId(idTarget, inventario));
-		System.out.println("articolo eliminato");
+		;
+		if(searchArticolobyId(idTarget, inventario)!=null) {
+			inventario.remove(searchArticolobyId(idTarget, inventario));
+			System.out.println("articolo eliminato");
+		}else {
+			System.out.println("articolo non esiste");
+		}
+		
 	}
 
 	private void modificaArticoloScanner(Scanner scanner, List<Articolo> inventario) {
