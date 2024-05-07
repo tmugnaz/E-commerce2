@@ -50,7 +50,7 @@ public class Main {
 			//Cliente cliente = loginCliente();
 			List<Articolo> listaArticoli = popolaInventario();
 			stampaListaArticoliDisponibili(listaArticoli);
-			creaRigaOrdineEOrdine(listaArticoli);
+			creaRigaOrdine(listaArticoli);
 			
 
 			break;
@@ -249,56 +249,101 @@ public class Main {
 		 System.out.println("───────────────────────────────────────");
 	 }
 	 
-	 public static void creaRigaOrdineEOrdine(List<Articolo> listaArticolo) {
+	 public static void creaRigaOrdine(List<Articolo> listaArticolo) {
 		 List<RigaOrdine> listaRigaOrdine = new ArrayList<>();
 		 boolean fineOrdine = false;
+		 boolean ordineAnnullato = false;
 		 Scanner scanner = new Scanner(System.in);
 		 while (!fineOrdine) {
 			 System.out.println("Inserire l'id dell'articolo che si vuole acquistare o\n" +
-					 "- digitale -2 per visualizzare il tuo ordine attuale\n" +
+					 "- digitale -4 per visualizzare gli articoli disponibili nell'inventario\n" +
+					 "- digitale -3 per visualizzare gli articoli nel carrello\n" +
+					 "- digitale -2 per eliminare un articolo dal carrello\n" +
 			 		 "- digitale -1 per annullare l'ordine\n" +
 					 "- digitale 0 per confermare l'ordine");
 			 System.out.println("───────────────────────────────────────");
 			 int idArticolo = scanner.nextInt();
 			 scanner.nextLine();
-			 if (idArticolo == -2) {
-				 System.out.println("───────────────────────────────────────\n"+
-			 "Ordini nel carrello");
-				 for (RigaOrdine rigaOrdine : listaRigaOrdine) {
-					 System.out.println(rigaOrdine.getArticolo().getNome()+" qta: "+rigaOrdine.getQta());
-				}
-				 System.out.println("───────────────────────────────────────");
-			 }
-			 if (idArticolo == -1) {
-				 System.out.println("Hai annullato l'ordine");
-				 fineOrdine = true;
-			 }
-			 if (idArticolo == 0) {
-				 System.out.println("Hai confermato l'ordine");
-				 fineOrdine = true;
-			 }
-			 else {
-				 boolean articoloTrovato = false;
-				 for (Articolo articolo : listaArticolo) {
-					if (articolo.getId() == idArticolo) {
-						System.out.println("Hai selezionato l'articolo: "+articolo.getNome());
-						System.out.println("Inserire la quantità che si vuole acquistare");
-						int qtaArticolo = scanner.nextInt();
-						scanner.nextLine();
-						RigaOrdine rigaOrdine = new RigaOrdine(articolo, qtaArticolo, articolo.getCategoria().getSconto(), articolo.getCategoria().getIva());
-						listaRigaOrdine.add(rigaOrdine);
-						System.out.println("Hai inserito "+rigaOrdine.getQta()+" "+rigaOrdine.getArticolo().getNome()+" nel tuo ordine");
-						System.out.println("───────────────────────────────────────");
-						articoloTrovato = true;
+			 switch(idArticolo) {
+				 case -4: {
+					 stampaListaArticoliDisponibili(listaArticolo);
+					 break;
+				 }
+				 case -3: {
+					 System.out.println("───────────────────────────────────────\n"+
+					 "Ordini nel carrello");
+					 int i = 1;
+					 for (RigaOrdine rigaOrdine : listaRigaOrdine) {
+						 System.out.println("Riga ordine n° "+i+" -> "+rigaOrdine.getArticolo().getNome()+" | quantità: "+rigaOrdine.getQta());
+						 i++;
 					}
-				}
-				 if (!articoloTrovato) {
-					 System.out.println("L'articolo non è stato trovato\n"+"Riprova");
+					 System.out.println("───────────────────────────────────────");
+					 break;
+				 }
+				 case -2: {
+					 System.out.println("Digitale il numero di riga che si vuole eliminare dall'ordine");
+					 int numeroRigaDaEliminare = scanner.nextInt();
+					 scanner.nextLine();
+					 System.out.println("───────────────────────────────────────");
+					 if (numeroRigaDaEliminare <= listaRigaOrdine.size() && numeroRigaDaEliminare > 0) {
+						 listaRigaOrdine.remove(numeroRigaDaEliminare - 1);
+						 System.out.println("Riga ordine n° "+numeroRigaDaEliminare+" eliminato con successo");
+					 }
+					 else
+						 System.out.println("Ordine riga non trovato");
+					 System.out.println("───────────────────────────────────────");
+					 break;
+				 }
+				 case -1: {
+					 System.out.println("───────────────────────────────────────");
+					 System.out.println("Hai annullato l'ordine");
+					 System.out.println("Attendere....");
+					 System.out.println("───────────────────────────────────────");
+					 fineOrdine = true;
+					 ordineAnnullato = true;
+					 break;
+				 }
+				 case 0: {
+					 System.out.println("───────────────────────────────────────");
+					 System.out.println("Hai confermato l'ordine");
+					 System.out.println("───────────────────────────────────────");
+					 fineOrdine = true;
+					 break;
+				 }
+				 default: {
+					 boolean articoloTrovato = false;
+					 for (Articolo articolo : listaArticolo) {
+						if (articolo.getId() == idArticolo) {
+							System.out.println("Hai selezionato l'articolo: "+articolo.getNome());
+							System.out.println("Inserire la quantità che si vuole acquistare");
+							int qtaArticolo = scanner.nextInt();
+							scanner.nextLine();
+							RigaOrdine rigaOrdine = new RigaOrdine(articolo, qtaArticolo, articolo.getCategoria().getSconto(), articolo.getCategoria().getIva());
+							listaRigaOrdine.add(rigaOrdine);
+							System.out.println("Hai inserito "+rigaOrdine.getQta()+" "+rigaOrdine.getArticolo().getNome()+" nel tuo ordine");
+							articoloTrovato = true;
+						}
+					}
+					 if (!articoloTrovato) {
+						 System.out.println("L'articolo non è stato trovato\n"+"Riprova");
+					 }
+					 System.out.println("───────────────────────────────────────");
 				 }
 			 }
+		 }
+		 scanner.close();
+		 creaOrdine(listaRigaOrdine, ordineAnnullato);
+	 }
+	 
+	 public static void creaOrdine(List<RigaOrdine> listaRigaOrdine, boolean ordineAnnullato) {
+		 if (ordineAnnullato) {
+			 System.out.println("Ordine annullato con successo");
+		 }
+		 else {
 			 
 		 }
 	 }
+	 
 }
 
 
