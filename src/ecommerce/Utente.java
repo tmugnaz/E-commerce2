@@ -18,6 +18,23 @@ public abstract class Utente {
 
 	}
 
+	public Utente(String nome, String cognome, String codiceFiscale, List<String> numeriTelefono,
+			List<IndirizzoUtente> indirizzi) {
+		this.nome = nome;
+		this.cognome = cognome;
+		this.codiceFiscale = codiceFiscale;
+		this.numeriTelefono = numeriTelefono;
+		this.indirizzi = indirizzi;
+	}
+
+	public List<IndirizzoUtente> getIndirizzi() {
+		return indirizzi;
+	}
+
+	public void setIndirizzi(List<IndirizzoUtente> indirizzi) {
+		this.indirizzi = indirizzi;
+	}
+
 	public void aggiungiIndirizzo(String via, String cap, String citta, TipoIndirizzo tipoIndirizzo) {
 		IndirizzoUtente i = new IndirizzoUtente(via, cap, citta, tipoIndirizzo);
 		this.indirizzi.add(i);
