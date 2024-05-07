@@ -1,6 +1,7 @@
 package ecommerce;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -46,7 +47,11 @@ public class Main {
 
 			break;
 		case (2):
-			System.out.println("ciao cliente");
+			//Cliente cliente = loginCliente();
+			List<Articolo> listaArticoli = popolaInventario();
+			stampaListaArticoliDisponibili(listaArticoli);
+			creaRigaOrdineEOrdine(listaArticoli);
+			
 
 			break;
 		default:
@@ -186,7 +191,114 @@ public class Main {
 	            }
 	        }
 	    }
-
+	 
+	 //
+	 //
+	 //Codici relativi al cliente
+	 //
+	 //
+	 
+	 public static List<Cliente> databaseCliente() {
+		 return new ArrayList<>(Arrays.asList(
+				 new Cliente("Mario", "Rossi", "FNE0FNFN0J902", new ArrayList<>(Arrays.asList("34832440208")), new ArrayList<>(Arrays.asList(
+						 new IndirizzoUtente("via gramsci", "11", "Firenze", TipoIndirizzo.FATTURAZIONE),
+						 new IndirizzoUtente("via calatafimi", "34", "Bologna", TipoIndirizzo.FATTURAZIONE),
+						 new IndirizzoUtente("via vittorio manuele veneto", "89", "Milano", TipoIndirizzo.SPEDIZIONE)
+						 ))),
+				 new Cliente("Filippo", "Costa", "NFEOIFW20920"),
+				 new Cliente("Andrea", "Russo", "IBGO40JIFODS"),
+				 new Cliente("Luigi", "Bianchi", "UREWI839939"),
+				 new Cliente("Leonardo", "Gallo", "ONPKMOHPK32")
+				 ));
+	 }
+	 
+	 public static Cliente loginCliente() {
+		 Cliente cliente = new Cliente("null", "null", "null");
+		 List<Cliente> listaClienti = databaseCliente();
+		 Scanner scanner = new Scanner(System.in);
+		 boolean clienteNonTrovato = true;
+		 while(clienteNonTrovato) {
+			 System.out.println("Inserire nome");
+			 String nomeCliente = scanner.nextLine();
+			 System.out.println("Inserire cognome");
+			 String cognomeCliente = scanner.nextLine();
+			 for (Cliente databaseCliente : listaClienti) {
+				if (databaseCliente.getNome().equalsIgnoreCase(nomeCliente) && databaseCliente.getCognome().equalsIgnoreCase(cognomeCliente)) {
+					cliente = databaseCliente;
+					System.out.println("Benvenuto "+cliente.getNome()+" "+cliente.getCognome());
+					cliente.StampaInfoUtente();
+					clienteNonTrovato = false;
+				}
+			}
+			if (clienteNonTrovato) {
+				System.out.println("Nome o cognome sbagliato/i\n"+"Riprova");
+				System.out.println("<---x--->");
+			}
+		 }
+		 scanner.close();
+		return cliente;
+	 }
+	  
+	 public static void stampaListaArticoliDisponibili(List<Articolo> listaArticoli) {
+		 System.out.println("───────────────────────────────────────\n" +
+	               "Scegli gli articoli da acquistare             \n");
+		 for (Articolo articolo : listaArticoli) {
+			System.out.println("id: "+articolo.getId()+" nome: "+articolo.getNome()+" prezzo: "+articolo.getPrezzo()+"€"+" categoria: "+articolo.getCategoria().getNome());
+		}
+	       
+		 System.out.println("───────────────────────────────────────");
+	 }
+	 
+	 public static void creaRigaOrdineEOrdine(List<Articolo> listaArticolo) {
+		 List<RigaOrdine> listaRigaOrdine = new ArrayList<>();
+		 boolean fineOrdine = false;
+		 Scanner scanner = new Scanner(System.in);
+		 while (!fineOrdine) {
+			 System.out.println("Inserire l'id dell'articolo che si vuole acquistare o\n" +
+					 "- digitale -2 per visualizzare il tuo ordine attuale\n" +
+			 		 "- digitale -1 per annullare l'ordine\n" +
+					 "- digitale 0 per confermare l'ordine");
+			 System.out.println("───────────────────────────────────────");
+			 int idArticolo = scanner.nextInt();
+			 scanner.nextLine();
+			 if (idArticolo == -2) {
+				 System.out.println("───────────────────────────────────────\n"+
+			 "Ordini nel carrello");
+				 for (RigaOrdine rigaOrdine : listaRigaOrdine) {
+					 System.out.println(rigaOrdine.getArticolo().getNome()+" qta: "+rigaOrdine.getQta());
+				}
+				 System.out.println("───────────────────────────────────────");
+			 }
+			 if (idArticolo == -1) {
+				 System.out.println("Hai annullato l'ordine");
+				 fineOrdine = true;
+			 }
+			 if (idArticolo == 0) {
+				 System.out.println("Hai confermato l'ordine");
+				 fineOrdine = true;
+			 }
+			 else {
+				 boolean articoloTrovato = false;
+				 for (Articolo articolo : listaArticolo) {
+					if (articolo.getId() == idArticolo) {
+						System.out.println("Hai selezionato l'articolo: "+articolo.getNome());
+						System.out.println("Inserire la quantità che si vuole acquistare");
+						int qtaArticolo = scanner.nextInt();
+						scanner.nextLine();
+						RigaOrdine rigaOrdine = new RigaOrdine(articolo, qtaArticolo, articolo.getCategoria().getSconto(), articolo.getCategoria().getIva());
+						listaRigaOrdine.add(rigaOrdine);
+						System.out.println("Hai inserito "+rigaOrdine.getQta()+" "+rigaOrdine.getArticolo().getNome()+" nel tuo ordine");
+						System.out.println("───────────────────────────────────────");
+						articoloTrovato = true;
+					}
+				}
+				 if (!articoloTrovato) {
+					 System.out.println("L'articolo non è stato trovato\n"+"Riprova");
+				 }
+			 }
+			 
+		 }
+	 }
 }
 
 
