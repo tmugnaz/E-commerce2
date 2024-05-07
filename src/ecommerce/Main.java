@@ -1,6 +1,7 @@
 package ecommerce;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,39 +20,42 @@ public class Main {
 	 * amministratori
 	 * 
 	 */
-	
-	//METODI AMMINISTRATORE
-	// CREAZIONE ARTICOLI	
-	// CREAZIONE CATEGORIE 
+
+	// METODI AMMINISTRATORE
+	// CREAZIONE ARTICOLI
+	// CREAZIONE CATEGORIE
 	// STAMPA ARTICOLI INFO
 	// STAMPA LISTA CATEGORIE
 	// CANCELLA ARTICOLO
 	// CANCELLA CATEGORIE
-	
-	
-	
-	
 
 	public static void avviaApplicazione() {
 		Scanner scanner = new Scanner(System.in);
-		System.out.println("vuoi loggare come amministratore o come cliente (1/2)");
-		int sceltaUtente = scanner.nextInt();
-		List<Articolo> inventario = popolaInventario();
-		scanner.nextLine();
-		switch (sceltaUtente) {
-		case (1):
-			Amministratore admin = loginAdmin(scanner);
-			System.out.println("Ciao Amministratore");
-			menùAmministratore(scanner, admin,inventario);
+		System.out.println("Benventuto, vuoi loggare come amministratore (1) o come cliente (2)");
+		try {
+			int sceltaUtente = scanner.nextInt();
 
-			break;
-		case (2):
-			System.out.println("ciao cliente");
+			List<Articolo> inventario = popolaInventario();
+			scanner.nextLine();
+			switch (sceltaUtente) {
+			case (1):
+				Amministratore admin = loginAdmin(scanner);
+				System.out.println("Ciao Amministratore");
+				menùAmministratore(scanner, admin, inventario);
 
-			break;
-		default:
-			System.out.println("hai sbagliato riprova");
-			break;
+				break;
+			case (2):
+				System.out.println("ciao cliente");
+
+				break;
+			default:
+				System.out.println("hai sbagliato riprova");
+				break;
+			}
+		} catch (InputMismatchException e) {
+			System.out.println("Errore");
+		} finally {
+			scanner.close();
 		}
 
 	}
@@ -70,15 +74,17 @@ public class Main {
 
 	}
 
-	public static void menùAmministratore(Scanner scanner, Amministratore admin,List<Articolo> inventario) {
+	public static void menùAmministratore(Scanner scanner, Amministratore admin, List<Articolo> inventario) {
 		boolean continuaEsecuzione = true;
-		while (continuaEsecuzione==true) {
+		while (continuaEsecuzione == true) {
 			stampaMenù();
 			String scelta = scanner.nextLine();
 			switch (scelta) {
 			case ("1"):
+				admin.menùArticoloScanner(scanner, inventario);
 				break;
 			case ("2"):
+				admin.menùCategoriaScanner(scanner);
 				break;
 			case ("3"):
 				StampaInventario(inventario);
@@ -87,10 +93,6 @@ public class Main {
 				stampaCategorie();
 				break;
 			case ("5"):
-				break;
-			case ("6"):
-				break;
-			case ("7"):
 				System.out.println("Uscita...");
 				continuaEsecuzione = false;
 				break;
@@ -103,88 +105,71 @@ public class Main {
 	}
 
 	public static void stampaMenù() {
-		System.out.println("╭───────────────────────────────────────╮\n" +
-			               "│     Menù Amministratore               │\n" +
-			               "│                                       │\n" +
-			               "│   Seleziona un'opzione:               │\n" +
-			               "│   1. Menù articoli                    │\n" +
-			               "│   2. Menù Categorie                   │\n" +
-			               "│   3. Visualizza Inventario            │\n" +
-			               "│   4. Visualizza lista Categorie       │\n" +
-			               "│   7. Uscita                           │\n" +
-			               "│                                       │\n" +
-			               "╰───────────────────────────────────────╯");
+		System.out.println("╭───────────────────────────────────────╮\n" + "│     Menù Amministratore               │\n"
+				+ "│                                       │\n" + "│   Seleziona un'opzione:               │\n"
+				+ "│   1. Menù articoli                    │\n" + "│   2. Menù Categorie                   │\n"
+				+ "│   3. Visualizza Inventario            │\n" + "│   4. Visualizza lista Categorie       │\n"
+				+ "│   5. Uscita                           │\n" + "│                                       │\n"
+				+ "╰───────────────────────────────────────╯");
 
+	}
 
-
-
-
-
-		}
-	
-	public static List<Articolo> popolaInventario(){
+	public static List<Articolo> popolaInventario() {
 		Categoria elettronica = new Categoria("Elettronica", 22, 10);
-        Categoria smartphone = new Categoria("Smartphone", 22, 5);
-        Categoria laptop = new Categoria("Laptop", 22, 8);
-        Categoria abbigliamento = new Categoria("Abbigliamento", 22, 15);
-        Categoria uomo = new Categoria("Uomo", 22, 10);
-        Categoria donna = new Categoria("Donna", 22, 10);
-        Categoria casa = new Categoria("Casa", 22, 5);
-        Categoria mobili = new Categoria("Mobili", 22, 5);
-        
-        
-        elettronica.aggiungiSottoCategoria(smartphone);
-        elettronica.aggiungiSottoCategoria(laptop);
-        abbigliamento.aggiungiSottoCategoria(uomo);
-        abbigliamento.aggiungiSottoCategoria(donna);
-        casa.aggiungiSottoCategoria(mobili);
-        
-       
-        Categoria.aggiungiCategoria(elettronica);
-        Categoria.aggiungiCategoria(abbigliamento);
-        Categoria.aggiungiCategoria(casa);
+		Categoria smartphone = new Categoria("Smartphone", 22, 5);
+		Categoria laptop = new Categoria("Laptop", 22, 8);
+		Categoria abbigliamento = new Categoria("Abbigliamento", 22, 15);
+		Categoria uomo = new Categoria("Uomo", 22, 10);
+		Categoria donna = new Categoria("Donna", 22, 10);
+		Categoria casa = new Categoria("Casa", 22, 5);
+		Categoria mobili = new Categoria("Mobili", 22, 5);
 
-        
-        Articolo articolo1 = new Articolo("iPhone 12", 1L, 1000, smartphone);
-        Articolo articolo2 = new Articolo("Samsung Galaxy S21", 2L, 800, smartphone);
-        Articolo articolo3 = new Articolo("MacBook Pro", 3L, 1500, laptop);
-        Articolo articolo4 = new Articolo("Dolce & Gabbana Shirt", 4L, 200, uomo);
-        Articolo articolo5 = new Articolo("Gucci Dress", 5L, 500, donna);
-        Articolo articolo6 = new Articolo("IKEA Sofa", 6L, 700, mobili);
-        Articolo articolo7 = new Articolo("IKEA Table", 7L, 300, mobili);
-        
-       
-        List<Articolo> inventario = new ArrayList<>();
-        inventario.add(articolo1);
-        inventario.add(articolo2);
-        inventario.add(articolo3);
-        inventario.add(articolo4);
-        inventario.add(articolo5);
-        inventario.add(articolo6);
-        inventario.add(articolo7);
-		
+		elettronica.aggiungiSottoCategoria(smartphone);
+		elettronica.aggiungiSottoCategoria(laptop);
+		abbigliamento.aggiungiSottoCategoria(uomo);
+		abbigliamento.aggiungiSottoCategoria(donna);
+		casa.aggiungiSottoCategoria(mobili);
+
+		Categoria.aggiungiCategoria(elettronica);
+		Categoria.aggiungiCategoria(abbigliamento);
+		Categoria.aggiungiCategoria(casa);
+
+		Articolo articolo1 = new Articolo("iPhone 12", 1L, 1000, smartphone);
+		Articolo articolo2 = new Articolo("Samsung Galaxy S21", 2L, 800, smartphone);
+		Articolo articolo3 = new Articolo("MacBook Pro", 3L, 1500, laptop);
+		Articolo articolo4 = new Articolo("Dolce & Gabbana Shirt", 4L, 200, uomo);
+		Articolo articolo5 = new Articolo("Gucci Dress", 5L, 500, donna);
+		Articolo articolo6 = new Articolo("IKEA Sofa", 6L, 700, mobili);
+		Articolo articolo7 = new Articolo("IKEA Table", 7L, 300, mobili);
+
+		List<Articolo> inventario = new ArrayList<>();
+		inventario.add(articolo1);
+		inventario.add(articolo2);
+		inventario.add(articolo3);
+		inventario.add(articolo4);
+		inventario.add(articolo5);
+		inventario.add(articolo6);
+		inventario.add(articolo7);
+
 		return inventario;
 	}
 
 	public static void StampaInventario(List<Articolo> inventario) {
 		System.out.println("Inventario:");
-        for (Articolo articolo : inventario) {
-            System.out.println("Nome: " + articolo.getNome() + 
-            		", Prezzo: " + articolo.getPrezzo() + ", "
-            				+ "Categoria: " + articolo.getCategoria().getNome());
-        }
+		for (Articolo articolo : inventario) {
+			articolo.getInfo();
+		}
 	}
-	 public static void stampaCategorie() {
-	        for (Categoria categoria : Categoria.getListaCategorie()) {
-	            System.out.println(categoria.getNome());
-	            if (!categoria.getSottoCategorie().isEmpty()) {
-	                for (Categoria sottocategoria : categoria.getSottoCategorie()) {
-	                    System.out.println("\t" + sottocategoria.getNome());
-	                }
-	            }
-	        }
-	    }
+
+	public static void stampaCategorie() {
+		for (Categoria categoria : Categoria.getListaCategorie()) {
+			System.out.println(categoria.getNome());
+			if (!categoria.getSottoCategorie().isEmpty()) {
+				for (Categoria sottocategoria : categoria.getSottoCategorie()) {
+					System.out.println("\t" + sottocategoria.getNome());
+				}
+			}
+		}
+	}
 
 }
-
-
