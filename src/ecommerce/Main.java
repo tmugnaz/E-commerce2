@@ -50,9 +50,9 @@ public class Main {
 			break;
 		case (2):
 			Cliente cliente = loginCliente();
-			List<Articolo> listaArticoli = popolaInventario();
-			stampaListaArticoliDisponibili(listaArticoli);
-			creaRigaOrdiniEOrdine(cliente, listaArticoli);
+			//List<Articolo> listaArticoli = popolaInventario();
+			stampaListaArticoliDisponibili(inventario);
+			creaRigaOrdiniEOrdine(cliente, inventario);
 			
 
 				break;
