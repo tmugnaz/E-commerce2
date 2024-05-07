@@ -347,8 +347,8 @@ public class Main {
 		 else {
 			IndirizzoUtente indirizzoFatturazione = null;
 			IndirizzoUtente indirizzoSpedizione = null;
-			List<IndirizzoUtente> listaIndirizziFatturazione = cliente.getIndirizzi().stream().filter(indirizzo -> indirizzo.getTipoIndirizzo() == TipoIndirizzo.FATTURAZIONE).collect(Collectors.toList());
-			List<IndirizzoUtente> listaIndirizziSpedizione = cliente.getIndirizzi().stream().filter(indirizzo -> indirizzo.getTipoIndirizzo() == TipoIndirizzo.SPEDIZIONE).collect(Collectors.toList());
+			ArrayList<IndirizzoUtente> listaIndirizziFatturazione = (ArrayList<IndirizzoUtente>) cliente.getIndirizzi().stream().filter(indirizzo -> indirizzo.getTipoIndirizzo() == TipoIndirizzo.FATTURAZIONE).collect(Collectors.toList());
+			ArrayList<IndirizzoUtente> listaIndirizziSpedizione = (ArrayList<IndirizzoUtente>) cliente.getIndirizzi().stream().filter(indirizzo -> indirizzo.getTipoIndirizzo() == TipoIndirizzo.SPEDIZIONE).collect(Collectors.toList());
 			if (listaIndirizziFatturazione.size() > 1) {
 				boolean fatturazioneSettata = false;
 				while (!fatturazioneSettata) {
