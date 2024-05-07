@@ -1,13 +1,12 @@
 package ecommerce;
 
 public class Articolo {
-	
+
 	private String nome;
-	private Long id ;
+	private Long id;
 	private int prezzo;
 	private Categoria categoria;
-	
-	
+
 	public Articolo(String nome, Long id, int prezzo, Categoria categoria) {
 		this.nome = nome;
 		this.id = id;
@@ -46,8 +45,10 @@ public class Articolo {
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
-	
-	
-	
+
+	public void getInfo() {
+		System.out.println("Nome: " + this.getNome() + ", Prezzo: " + this.getPrezzo() + ", " + "Categoria: "
+				+ this.getCategoria().getNome());
+	}
 
 }
