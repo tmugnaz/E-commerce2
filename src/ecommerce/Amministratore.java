@@ -206,7 +206,7 @@ public class Amministratore extends Utente {
 				break;
 			case (3):
 				System.out.println(
-						"digitare il nome  da sostituire con quello corrente, che è: " + categoria.getSconto());
+						"digitare il nome  da sostituire con quello corrente, che è: " + categoria.getNome());
 				String nuovoNome = scanner.nextLine();
 				this.setNomeCategoria(nuovoNome, categoria);
 				break;
