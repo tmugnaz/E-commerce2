@@ -27,6 +27,14 @@ public abstract class Utente {
 		this.indirizzi = indirizzi;
 	}
 
+	public List<IndirizzoUtente> getIndirizzi() {
+		return indirizzi;
+	}
+
+	public void setIndirizzi(List<IndirizzoUtente> indirizzi) {
+		this.indirizzi = indirizzi;
+	}
+
 	public void aggiungiIndirizzo(String via, String cap, String citta, TipoIndirizzo tipoIndirizzo) {
 		IndirizzoUtente i = new IndirizzoUtente(via, cap, citta, tipoIndirizzo);
 		this.indirizzi.add(i);

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -47,10 +50,10 @@ public class Main {
 
 			break;
 		case (2):
-			//Cliente cliente = loginCliente();
+			Cliente cliente = loginCliente();
 			List<Articolo> listaArticoli = popolaInventario();
 			stampaListaArticoliDisponibili(listaArticoli);
-			creaRigaOrdine(listaArticoli);
+			creaRigaOrdiniEOrdine(cliente, listaArticoli);
 			
 
 			break;
@@ -201,9 +204,9 @@ public class Main {
 	 public static List<Cliente> databaseCliente() {
 		 return new ArrayList<>(Arrays.asList(
 				 new Cliente("Mario", "Rossi", "FNE0FNFN0J902", new ArrayList<>(Arrays.asList("34832440208")), new ArrayList<>(Arrays.asList(
-						 new IndirizzoUtente("via gramsci", "11", "Firenze", TipoIndirizzo.FATTURAZIONE),
-						 new IndirizzoUtente("via calatafimi", "34", "Bologna", TipoIndirizzo.FATTURAZIONE),
-						 new IndirizzoUtente("via vittorio manuele veneto", "89", "Milano", TipoIndirizzo.SPEDIZIONE)
+						 new IndirizzoUtente("via gramsci", "50001", "Firenze", TipoIndirizzo.FATTURAZIONE),
+						 new IndirizzoUtente("via calatafimi", "30301", "Bologna", TipoIndirizzo.FATTURAZIONE),
+						 new IndirizzoUtente("via vittorio manuele veneto", "98829", "Milano", TipoIndirizzo.SPEDIZIONE)
 						 ))),
 				 new Cliente("Filippo", "Costa", "NFEOIFW20920"),
 				 new Cliente("Andrea", "Russo", "IBGO40JIFODS"),
@@ -232,10 +235,9 @@ public class Main {
 			}
 			if (clienteNonTrovato) {
 				System.out.println("Nome o cognome sbagliato/i\n"+"Riprova");
-				System.out.println("<---x--->");
+				System.out.println("───────────────────────────────────────");
 			}
 		 }
-		 scanner.close();
 		return cliente;
 	 }
 	  
@@ -249,8 +251,8 @@ public class Main {
 		 System.out.println("───────────────────────────────────────");
 	 }
 	 
-	 public static void creaRigaOrdine(List<Articolo> listaArticolo) {
-		 List<RigaOrdine> listaRigaOrdine = new ArrayList<>();
+	 public static void creaRigaOrdiniEOrdine(Cliente cliente, List<Articolo> listaArticolo) {
+		 List<RigaOrdine> listaRigaOrdini = new ArrayList<>();
 		 boolean fineOrdine = false;
 		 boolean ordineAnnullato = false;
 		 Scanner scanner = new Scanner(System.in);
@@ -273,7 +275,7 @@ public class Main {
 					 System.out.println("───────────────────────────────────────\n"+
 					 "Ordini nel carrello");
 					 int i = 1;
-					 for (RigaOrdine rigaOrdine : listaRigaOrdine) {
+					 for (RigaOrdine rigaOrdine : listaRigaOrdini) {
 						 System.out.println("Riga ordine n° "+i+" -> "+rigaOrdine.getArticolo().getNome()+" | quantità: "+rigaOrdine.getQta());
 						 i++;
 					}
@@ -285,8 +287,8 @@ public class Main {
 					 int numeroRigaDaEliminare = scanner.nextInt();
 					 scanner.nextLine();
 					 System.out.println("───────────────────────────────────────");
-					 if (numeroRigaDaEliminare <= listaRigaOrdine.size() && numeroRigaDaEliminare > 0) {
-						 listaRigaOrdine.remove(numeroRigaDaEliminare - 1);
+					 if (numeroRigaDaEliminare <= listaRigaOrdini.size() && numeroRigaDaEliminare > 0) {
+						 listaRigaOrdini.remove(numeroRigaDaEliminare - 1);
 						 System.out.println("Riga ordine n° "+numeroRigaDaEliminare+" eliminato con successo");
 					 }
 					 else
@@ -319,7 +321,7 @@ public class Main {
 							int qtaArticolo = scanner.nextInt();
 							scanner.nextLine();
 							RigaOrdine rigaOrdine = new RigaOrdine(articolo, qtaArticolo, articolo.getCategoria().getSconto(), articolo.getCategoria().getIva());
-							listaRigaOrdine.add(rigaOrdine);
+							listaRigaOrdini.add(rigaOrdine);
 							System.out.println("Hai inserito "+rigaOrdine.getQta()+" "+rigaOrdine.getArticolo().getNome()+" nel tuo ordine");
 							articoloTrovato = true;
 						}
@@ -331,17 +333,110 @@ public class Main {
 				 }
 			 }
 		 }
-		 scanner.close();
-		 creaOrdine(listaRigaOrdine, ordineAnnullato);
+		 creaOrdine(cliente, listaRigaOrdini, ordineAnnullato);
 	 }
 	 
-	 public static void creaOrdine(List<RigaOrdine> listaRigaOrdine, boolean ordineAnnullato) {
+	 public static void creaOrdine(Cliente cliente, List<RigaOrdine> listaRigaOrdini, boolean ordineAnnullato) {
+		 Scanner scanner = new Scanner(System.in);
 		 if (ordineAnnullato) {
 			 System.out.println("Ordine annullato con successo");
 		 }
-		 else {
-			 
+		 else if (listaRigaOrdini.isEmpty()) {
+			 System.out.println("L'ordine è stato annullato perché risulta vuoto");
 		 }
+		 else {
+			IndirizzoUtente indirizzoFatturazione = null;
+			IndirizzoUtente indirizzoSpedizione = null;
+			List<IndirizzoUtente> listaIndirizziFatturazione = cliente.getIndirizzi().stream().filter(indirizzo -> indirizzo.getTipoIndirizzo() == TipoIndirizzo.FATTURAZIONE).collect(Collectors.toList());
+			List<IndirizzoUtente> listaIndirizziSpedizione = cliente.getIndirizzi().stream().filter(indirizzo -> indirizzo.getTipoIndirizzo() == TipoIndirizzo.SPEDIZIONE).collect(Collectors.toList());
+			if (listaIndirizziFatturazione.size() > 1) {
+				boolean fatturazioneSettata = false;
+				while (!fatturazioneSettata) {
+					System.out.println("Hai più indirizzi di fatturazione\n"+"digita quale indirizzo vuoi come fatturazione");
+					int i = 1;
+					for (IndirizzoUtente indirizzoUtente : listaIndirizziFatturazione) {
+						System.out.println(i+": "+indirizzoUtente.getVia()+" "+indirizzoUtente.getCitta()+" "+indirizzoUtente.getCap());
+						i++;
+					}
+					int indirizzoScelto = scanner.nextInt();
+					scanner.nextLine();
+					if (indirizzoScelto <= listaIndirizziFatturazione.size() && indirizzoScelto > 0) {
+						indirizzoFatturazione = listaIndirizziFatturazione.get(indirizzoScelto - 1);
+						System.out.println("Indirizzo di fatturazione aggiornato con successo");
+						fatturazioneSettata = true;
+					}
+					else {
+						System.out.println("Scegli un indirizzo valido");
+					}
+				}				
+			}
+			else {
+				indirizzoFatturazione = listaIndirizziFatturazione.get(0);
+			}
+			if (listaIndirizziSpedizione.size() > 1) {
+				boolean spedizioneSettata = false;
+				while (!spedizioneSettata) {
+					System.out.println("Hai più indirizzi di spedizione\n"+"digita quale indirizzo vuoi come spedizione");
+					int i = 1;
+					for (IndirizzoUtente indirizzoUtente : listaIndirizziSpedizione) {
+						System.out.println(i+": "+indirizzoUtente.getVia()+" "+indirizzoUtente.getCap()+" "+indirizzoUtente.getCitta());
+						i++;
+					}
+					int indirizzoScelto = scanner.nextInt();
+					scanner.nextLine();
+					if (indirizzoScelto <= listaIndirizziSpedizione.size() && indirizzoScelto > 0) {
+						indirizzoSpedizione = listaIndirizziSpedizione.get(indirizzoScelto - 1);
+						System.out.println("Indirizzo di spedizione aggiornato con successo");
+						spedizioneSettata = true;
+					}
+					else {
+						System.out.println("Scegli un indirizzo valido");
+					}
+				}				
+			}
+			else {
+				indirizzoSpedizione = listaIndirizziSpedizione.get(0);
+			}
+			MetodoPagamento metodoPagamentoScelto = null;
+			List<MetodoPagamento> listaMetodiPagamento = MetodoPagamento.getLista();
+			boolean metodoPagamentoSettato = false;
+			while (!metodoPagamentoSettato) {
+				System.out.println("───────────────────────────────────────");
+				System.out.println("Scegli metodo pagamento");
+				int i = 1;
+				for (MetodoPagamento metodoPagamento : listaMetodiPagamento) {
+					System.out.println(i+": "+metodoPagamento.getNome());
+					i++;
+				}
+				int opzionePagamentoScelto = scanner.nextInt();
+				scanner.nextLine();
+				if (opzionePagamentoScelto <= listaMetodiPagamento.size() && opzionePagamentoScelto > 0) {
+					metodoPagamentoScelto = listaMetodiPagamento.get(opzionePagamentoScelto - 1);
+					System.out.println("Metodo di pagamento aggiornato con successo");
+					metodoPagamentoSettato = true;
+				}
+				else {
+					System.out.println("Scegli un metodo di pagamento valido");
+				}
+			}
+			OrdineVendita ordineVendita = new OrdineVendita(indirizzoFatturazione, indirizzoSpedizione, metodoPagamentoScelto, listaRigaOrdini);
+			stampaOrdine(ordineVendita);
+		 }
+	 }
+	 public static void stampaOrdine(OrdineVendita ordineVendita) {
+		 System.out.println("───────────────────────────────────────");
+		 System.out.println("Scontrino");
+		 int costoTotale = 0;
+		 int i = 1;
+		 for (RigaOrdine rigaOrdine : ordineVendita.getRigheOrdini()) {
+			 System.out.println(+i+" -> "+rigaOrdine.getArticolo().getNome()+" | quantità: "+rigaOrdine.getQta());
+			 i++;
+			 costoTotale += rigaOrdine.getPrezzoUnitario() * rigaOrdine.getQta();
+		}
+		System.out.println("Indirizzo di fatturazione: "+ordineVendita.getIndirizzoFatturazione().getVia()+" "+ordineVendita.getIndirizzoFatturazione().getCitta()+" "+ordineVendita.getIndirizzoFatturazione().getCap());
+		System.out.println("Indirizzo di spedizione: "+ordineVendita.getIndirizzoSpedizione().getVia()+" "+ordineVendita.getIndirizzoSpedizione().getCitta()+" "+ordineVendita.getIndirizzoSpedizione().getCap());
+		System.out.println("Costo totale: "+costoTotale+"€");
+		 
 	 }
 	 
 }
