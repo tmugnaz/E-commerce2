@@ -107,12 +107,10 @@ public class Main {
 			               "│     Menù Amministratore               │\n" +
 			               "│                                       │\n" +
 			               "│   Seleziona un'opzione:               │\n" +
-			               "│   1. Creazione articoli               │\n" +
-			               "│   2. Creazione Categorie              │\n" +
-			               "│   3. Visualizza lista articoli        │\n" +
-			               "│   4. Visualizza lista categorie       │\n" +
-			               "│   5. Elimina Articolo                 │\n" +
-			               "│   6. Elimina Categoria                │\n" +
+			               "│   1. Menù articoli                    │\n" +
+			               "│   2. Menù Categorie                   │\n" +
+			               "│   3. Visualizza Inventario            │\n" +
+			               "│   4. Visualizza lista Categorie       │\n" +
 			               "│   7. Uscita                           │\n" +
 			               "│                                       │\n" +
 			               "╰───────────────────────────────────────╯");
