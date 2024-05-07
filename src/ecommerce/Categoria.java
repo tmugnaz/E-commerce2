@@ -76,6 +76,9 @@ public class Categoria {
 		Categoria.listaCategorie.remove(categoria);
 				
 	}
+	public static List<Categoria> getListaCategorie(){
+		return Categoria.listaCategorie;
+	}
 	
 
 }
